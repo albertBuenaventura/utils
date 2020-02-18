@@ -1,0 +1,41 @@
+#!/usr/bin/env groovy
+
+pipeline {
+    agent any
+    
+    environment {
+        GitUrl = 'insert-ssh-git-url-here'
+        GitCredentialId = 'insert-credential-id-from-jenkins'
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                  git url: GitUrl,
+                  branch: GIT_BRANCH
+                }
+            }
+        }
+        
+        stage('Unit test') {
+        
+        }
+        
+        stage('Approval') {
+          
+        }
+        
+        stage('Deploy') {
+            steps {
+                script {
+                    sshagent (credentials: ['insert-jenkins-generated-key-here']) {
+                        sh """
+                            ssh -o StrictHostKeyChecking=no -l user 127.0.0.1 'execute shell command for deployer'
+                        """
+                    }
+                }
+            }
+        }
+    }
+}
